@@ -31,13 +31,14 @@ public class AI : MonoBehaviour
     public float maxDetectTime = 0.5f;
     public float investigationDelay = 1f;
     public float investigationDuration = 4f;
+    public bool investigating;
 
     private CharacterMover cc;
     private GameObject player;
     private int waypointIndex;
 
     private float detectTime;
-    private AIState state = AIState.Patrolling;
+    public AIState state = AIState.Patrolling;
 
     private Waypoint[] waypoints;
     private GameObject[] cops;
@@ -54,7 +55,6 @@ public class AI : MonoBehaviour
         playerRoomHandler = player.GetComponent<RoomHandler>();
         playerPickupHandler = player.GetComponent<PickupHandler>();
         roomHandler = GetComponent<RoomHandler>();
-
         detectTime = maxDetectTime;
     }
 
@@ -79,6 +79,7 @@ public class AI : MonoBehaviour
     {
         InitWaypoints();
         BeginPatrol();
+        navAgent.SetDestination(transform.position);
     }
 
     private void BeginPatrol()
@@ -162,12 +163,12 @@ public class AI : MonoBehaviour
 
     private IEnumerator Investigate(Distraction distraction, bool run)
     {
+        investigating = true;
         cc.Move(0, 0, false, false);
         yield return new WaitForSeconds(investigationDelay);
         navAgent.SetDestination(distraction.transform.position);
 
         var time = investigationDuration;
-
         while (true)
         {
             OnNavigate(run);
@@ -185,6 +186,7 @@ public class AI : MonoBehaviour
                     distraction.Stop();
                     currentDistraction = null;
                     BeginPatrol();
+                    investigating = false;
                     break;
                 }
             }
