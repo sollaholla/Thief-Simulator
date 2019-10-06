@@ -168,6 +168,11 @@ public class AI : MonoBehaviour
         yield return new WaitForSeconds(investigationDelay);
         navAgent.SetDestination(distraction.transform.position);
 
+        while (navAgent.pathPending)
+        {
+            yield return null;
+        }
+
         var time = investigationDuration;
         while (true)
         {
@@ -218,6 +223,11 @@ public class AI : MonoBehaviour
             {
                 navAgent.SetDestination(closest.transform.position);
 
+                while (navAgent.pathPending)
+                {
+                    yield return null;
+                }
+
                 if (navAgent.remainingDistance < navAgent.stoppingDistance)
                 {
                     BeginPatrol();
@@ -245,6 +255,11 @@ public class AI : MonoBehaviour
         while (true)
         {
             navAgent.SetDestination(waypoints[waypointIndex].point.position);
+
+            while (navAgent.pathPending)
+            {
+                yield return null;
+            }
 
             while (true)
             {
