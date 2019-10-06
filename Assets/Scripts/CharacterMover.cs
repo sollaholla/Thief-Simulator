@@ -11,7 +11,7 @@ public class CharacterMover : MonoBehaviour
 
     private CharacterController cc;
     private Animator animator;
-    private float moveSpeedMultiplier;
+    private float moveSpeedMultiplier = 1;
 
     private void Awake()
     {
@@ -21,8 +21,8 @@ public class CharacterMover : MonoBehaviour
 
     public void Move(float x, float y, bool running, bool crouching)
     {
-        var velocity = new Vector3(x, 0, y) * GetSpeed(running && !crouching, crouching);
-        cc.SimpleMove(velocity * Time.deltaTime);
+        var velocity = new Vector3(x, 0, y).normalized * GetSpeed(running && !crouching, crouching);
+        cc.SimpleMove(velocity);
 
         var relativeVel = transform.InverseTransformDirection(velocity);
         animator.SetFloat("VelocityX", relativeVel.x);
