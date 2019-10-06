@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -20,9 +21,29 @@ public class GameManager : MonoBehaviour
     {
         itemsToCollect.Remove(name);
         itemsChanged?.Invoke();
+
+        if(itemsToCollect.Count == 0)
+        {
+            EndGame(true);
+        }
     }
 
-    public void OnCaught()
+    public static void OnCaught()
     {
+        EndGame(false);
+    }
+
+    public static void EndGame(bool playerWon)
+    {
+        var GameOverScreen = GameObject.FindGameObjectWithTag("GameOverScreen");
+        var GameOverTitle = GameObject.FindGameObjectWithTag("EndGameTitle");
+
+        if (playerWon)
+        {
+            GameOverTitle.GetComponent<TextMeshPro>().text = "Passed";
+            GameOverTitle.GetComponent<TextMeshPro>().color = Color.green;
+        }
+
+        GameOverScreen.SetActive(true);
     }
 }
